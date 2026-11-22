@@ -1,0 +1,345 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.tier {
+  display: flex;
+  align-items: stretch;
+  width: 95vw; 
+  min-height: 125px;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+}
+
+.tier-letter {
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  width: 125px;
+  margin: 0;
+  border: 1px solid #ccc;
+}
+
+/* Overlay sitting on top of the letter box. The overlay itself ignores the
+   mouse so clicks fall through to the letter input; only the controls
+   inside it are clickable. */
+.tier-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 125px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* :focus-within keeps the controls up while a native color picker is open,
+   even if the mouse has left the row. */
+.tier:hover .tier-controls,
+.tier-controls:focus-within {
+  visibility: visible;
+}
+
+.tier-controls > * {
+  pointer-events: auto;
+}
+
+.tier-delete {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 16px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.tier-delete:hover {
+  background: #d32f2f;
+}
+
+.tier-background,
+.tier-text {
+  border: 0px;
+  block-size: 20px;
+  inline-size: 20px;
+  padding: 0px;
+}
+
+.tier-background {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+.tier-text {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.tier-button {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  background: transparent;
+  border: 2px solid #ccc;
+  border-radius: 15px;
+  color: white;
+}
+
+.tier-button-danger {
+  border-color: #d32f2f;
+  color: #ff8a80;
+}
+
+.tier-button-danger:hover {
+  background: #d32f2f;
+  color: white;
+}
+
+.tier-title {
+  font-size: 2rem;
+  text-align: center;
+  background: transparent;
+  color: inherit;
+  border: none;
+  border-bottom: 2px solid #ccc;
+}
+
+/* Holds a tier's items; wraps onto new lines when a row fills up.
+   Clicking empty space here moves the selected item into this tier. */
+.tier-items {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  min-height: 125px;
+}
+
+/* Unranked pool: where new items land before being placed in a tier. */
+.tier-pool {
+  width: 95vw;
+  margin-top: 1rem;
+  border: 2px dashed #888;
+  border-radius: 8px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.tier-pool-label {
+  margin: 0;
+  padding: 0.25rem 0.75rem;
+  font-size: 1rem;
+  color: #aaa;
+}
+
+.tier-pool-empty {
+  margin: auto;
+  font-size: 1rem;
+  color: #888;
+}
+
+.tier-item {
+  position: relative; /* for the drop marker */
+  cursor: grab;
+}
+
+.tier-item-dragging {
+  opacity: 0.35;
+}
+
+/* Where a dragged item will land: a bar on the tile's left edge, or on the
+   last tile's right edge for "end of row". Drawn as a pseudo-element so the
+   tiles don't shift under the pointer. */
+.tier-item-drop-before::before,
+.tier-item-drop-after::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  border-radius: 2px;
+  background: #61dafb;
+  z-index: 2;
+}
+
+.tier-item-drop-before::before {
+  left: -2px;
+}
+
+.tier-item-drop-after::after {
+  right: -2px;
+}
+
+.tier-items-drop-target {
+  background: rgba(97, 218, 251, 0.12);
+}
+
+.tier-item-selected {
+  outline: 3px solid #61dafb;
+  outline-offset: -3px;
+  position: relative;
+  z-index: 1;
+}
+
+.tier-object-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 125px;
+  height: 125px;
+  background: white;
+  color: black;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 6px;
+  overflow: hidden;
+  line-height: 1.15;
+}
+
+.tier-object-image {
+  /* Block, not inline: an inline image sits on the text baseline and leaves
+     a few pixels of space below it for letter descenders. */
+  display: block;
+  width: 125px;
+  height: 125px;
+  object-fit: cover;
+}
+
+/* Even the smallest font size doesn't fit: let long words break and clip
+   whatever is left. The full text is still in the tooltip. */
+.tier-object-text-overflow > span {
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+.tier-loading {
+  font-size: 1rem;
+  color: #aaa;
+}
+
+.tier-save-error {
+  max-width: 95vw;
+  margin: 0 0 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background: #5c1a1a;
+  border: 1px solid #d32f2f;
+  color: #ffcdd2;
+  font-size: 1rem;
+}
+
+.slot-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  font-size: 1rem;
+}
+
+.slot-select {
+  font-size: 1rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+  max-width: 60vw;
+}
+
+/* Text item with no text yet: shows "[empty]" so the tile stays clickable. */
+.tier-object-text-placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+.tier-import-progress {
+  font-size: 1rem;
+  color: #aaa;
+}
+
+.tier-button:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+/* Large image shown beside a hovered or selected tile. Position and size
+   are set inline by FullSizePreview. */
+.full-size-preview {
+  position: fixed;
+  z-index: 1000;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background-color: rgba(0, 0, 0, 0.85);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  pointer-events: none; /* never blocks clicks or drops underneath */
+}
+
+.full-size-preview img {
+  flex: 1;
+  min-height: 0;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.full-size-preview figcaption {
+  font-size: 0.9rem;
+  color: #ddd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
